@@ -51,9 +51,11 @@ pipeline {
                       exit 1
                     fi
 
-                    $PY_CMD -m pip install --upgrade pip
-                    $PY_CMD -m pip install -r requirements.txt
-                    $PY_CMD -m pytest -v
+                                        $PY_CMD -m venv .venv
+                                        . .venv/bin/activate
+                                        python -m pip install --upgrade pip
+                                        pip install -r requirements.txt
+                                        pytest -v
                 '''
             }
         }
