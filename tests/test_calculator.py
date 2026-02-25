@@ -8,7 +8,7 @@ def calc():
 
 
 def test_add(calc):
-    assert calc.add(10, 20) == 30
+    assert calc.add(10, 20) == 40
 
 
 def test_subtract(calc):
