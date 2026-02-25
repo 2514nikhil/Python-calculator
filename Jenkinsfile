@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'ALERT_EMAIL', defaultValue: '', description: 'Recipient email for failure notifications')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -67,6 +71,22 @@ pipeline {
         }
         failure {
             echo 'Docker Pipeline Failed!'
+            script {
+                if (params.ALERT_EMAIL?.trim()) {
+                    mail(
+                        to: params.ALERT_EMAIL.trim(),
+                        subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                        body: """Job: ${env.JOB_NAME}
+Build: #${env.BUILD_NUMBER}
+Status: FAILED
+Branch: ${env.BRANCH_NAME ?: 'N/A'}
+Build URL: ${env.BUILD_URL}
+"""
+                    )
+                } else {
+                    echo 'ALERT_EMAIL is empty. Skipping failure email notification.'
+                }
+            }
         }
     }
 }
